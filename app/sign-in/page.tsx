@@ -10,6 +10,7 @@ import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { auth } from "@/app/firebase/config";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 export default function SignIn() {
   const {
@@ -26,16 +27,38 @@ export default function SignIn() {
   const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
 
   const onSubmit: SubmitHandler<SignInFormValues> = async (data) => {
+    const toastId = toast.loading("Waiting...");
+
     try {
       const res = await signInWithEmailAndPassword(data.email, data.password);
 
       if (res) {
         reset();
         sessionStorage.setItem("user", JSON.stringify(res.user));
+        toast.update(toastId, {
+          render: "You are logged in!",
+          type: "success",
+          isLoading: false,
+          autoClose: 2000,
+        });
 
         router.push("/");
+      } else {
+        toast.update(toastId, {
+          render: "Invalid email or password",
+          type: "error",
+          isLoading: false,
+          autoClose: 2000,
+        });
       }
     } catch (error) {
+      toast.update(toastId, {
+        render: error as string,
+        type: "error",
+        isLoading: false,
+        autoClose: 2000,
+      });
+
       console.error(error);
     }
   };
@@ -72,6 +95,7 @@ export default function SignIn() {
             label="Password"
             placeholder="Enter password"
             errorData={errors.password?.message}
+            type="password"
             required
           />
         </Box>
@@ -97,7 +121,6 @@ export default function SignIn() {
           variant="body2"
           textAlign="center"
           sx={{ display: "inline", mr: 1 }}
-          onClick={() => router.push("/sign-up")}
         >
           Don&apos;t have an account?
         </Typography>

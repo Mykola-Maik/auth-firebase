@@ -16,6 +16,7 @@ interface FormInputTextProps<TFieldValues extends FieldValues> {
   placeholder?: string;
   required?: boolean;
   errorData?: string;
+  type?: "text" | "password";
   sx?: SxProps;
 }
 
@@ -27,6 +28,7 @@ export const FormInputText = <TFieldValues extends FieldValues>({
   placeholder,
   required,
   errorData,
+  type,
   sx,
 }: FormInputTextProps<TFieldValues>) => {
   return (
@@ -48,6 +50,7 @@ export const FormInputText = <TFieldValues extends FieldValues>({
           onChange={onChange}
           onBlur={onBlur}
           required={required}
+          type={type}
           sx={sx}
         />
       )}
