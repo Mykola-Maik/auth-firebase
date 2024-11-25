@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Box } from "@mui/material";
 import { Footer, Header } from "@/components";
 import "./globals.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
   title: "Auth Firebase",
@@ -35,6 +37,18 @@ export default function RootLayout({
           {children}
         </Box>
         <Footer />
+        <ToastContainer
+          position="top-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </Box>
     </html>
   );

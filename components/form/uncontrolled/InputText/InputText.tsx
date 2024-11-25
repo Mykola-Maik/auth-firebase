@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box, Typography, TextField } from "@mui/material";
+import { Box, Typography, TextField, InputAdornment } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import type { WithSx } from "@/types";
 import FormHelperText from "@mui/material/FormHelperText";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 interface InputTextProps extends WithSx {
   name: string;
@@ -16,6 +18,7 @@ interface InputTextProps extends WithSx {
   onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   placeholder?: string;
   required?: boolean;
+  type?: "text" | "password";
 }
 
 export const InputText = ({
@@ -27,17 +30,23 @@ export const InputText = ({
   placeholder,
   required,
   value,
+  type = "text",
   sx = {},
   inputRef,
   ...rest
 }: InputTextProps) => {
   const theme = useTheme();
   const [, setFocused] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleFocus = () => setFocused(true);
   const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     setFocused(false);
     if (onBlur) onBlur(event);
+  };
+
+  const handleClickShowPassword = () => {
+    setShowPassword((prev) => !prev);
   };
 
   return (
@@ -78,12 +87,39 @@ export const InputText = ({
         name={name}
         error={!!error}
         value={value}
+        type={type === "password" && !showPassword ? "password" : "text"}
         onChange={onChange}
         onBlur={handleBlur}
         onFocus={handleFocus}
         placeholder={placeholder}
         required={required}
         fullWidth
+        slotProps={{
+          input: {
+            endAdornment: type === "password" && (
+              <InputAdornment
+                position="end"
+                sx={{
+                  position: "absolute",
+                  right: "12px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  cursor: "pointer",
+                }}
+                onClick={handleClickShowPassword}
+              >
+                {showPassword ? (
+                  <VisibilityOffIcon
+                    fontSize="small"
+                    sx={{ color: "#84818A" }}
+                  />
+                ) : (
+                  <VisibilityIcon fontSize="small" sx={{ color: "#84818A" }} />
+                )}
+              </InputAdornment>
+            ),
+          },
+        }}
         sx={{
           "& .MuiOutlinedInput-root": {
             p: 0,
